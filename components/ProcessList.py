@@ -23,14 +23,14 @@ def timeit(func):
 class ProcessList(ft.Column):
     def __init__(self):
         super().__init__()
-        self.height = 20
+        self.height = 40
         self.p_dict: ProcessDict = ProcessDict()
         self.controls = ItemList(self)
         self.all_hidden = False
         self.spacing = 8
         self.padding = 0
-        self.width = 420
-        #self.expand = False
+        self.width = 400
+        self.expand = False
         self.scroll = ft.ScrollMode.ALWAYS
         self.w_search = None
         self.window_col = None
@@ -69,7 +69,7 @@ class ProcessList(ft.Column):
             return False
 
     def show_windows(self, e, p, h, wd):
-        h.switch_content('windows')
+        h.switch_content(e, 'windows')
 
         if self.w_search:
             self.w_search.filter_icon_action(window_col=wd, pid=p.pid)
@@ -83,7 +83,7 @@ class ItemList(list):
     def append(self, item):
         super().append(item)
         # self.processlist.item_dict[item.process.pid] = item
-        #self.processlist.height = self.processlist.height + 44
+        self.processlist.height = self.processlist.height + 44
 
 
 class ProcessItem(ContentContainer):

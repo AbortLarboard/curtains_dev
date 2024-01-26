@@ -3,10 +3,12 @@ import time
 import logging
 from . import curtains
 from .ContentContainer import ContentContainer
+from .widgets import ScaleWidget
 
 class ScreenshotContainer(ContentContainer):
 # TODO not sure if useful: safe screenshot
     def __init__(self):
+        icon = ft.Icon(name=ft.icons.VISIBILITY_SHARP, color=ft.colors.WHITE54)
         super().__init__(width=800, max_height=500, title_action=0)
         self.border = None
         self.padding = ft.padding.only(left=4)
@@ -14,6 +16,8 @@ class ScreenshotContainer(ContentContainer):
         self.content_col.spacing = 0
         self.title_row.visible = False
         self.alignment = ft.alignment.top_center
+        #self.content.padding = ft.padding.only(top=0,left=8,)
+        #self.body.padding = ft.padding.only(top=0, left=8, )
         self.width = 600
         self.height = 440
         self.s_width = None
@@ -22,6 +26,16 @@ class ScreenshotContainer(ContentContainer):
         self.update_delay = 0.5  # seconds between screenshots
         self.all_hidden = ft.Icon(name=ft.icons.QUESTION_MARK_OUTLINED, color=ft.colors.WHITE54)
 
+        self.row_interval = ft.Row(
+            [
+                ft.Container(ft.Text(value='interval'), width=100, padding=ft.padding.only(left=8)),
+                ft.Container(
+                    ScaleWidget(self, 'update_delay', min_value=0.1),
+                    width=200,
+                    alignment=ft.alignment.center),
+            ],
+
+        )
         self.row_all_hidden = ft.Row(
             [
                 ft.Container(ft.Text(value='all hidden'), width=100, padding=ft.padding.only(left=8)),
@@ -30,18 +44,19 @@ class ScreenshotContainer(ContentContainer):
                     width=200,
                     alignment=ft.alignment.center),
             ],
+            #alignment=ft.MainAxisAlignment.START
         )
         img, (self.s_width,self.s_height) = curtains.take_screenshot(self.fraction)
         self.wh_original = (self.s_width, self.s_height)
         self.screenshot = ft.Image(
             src_base64=curtains.image2base64(img),
+            #fit=ft.ImageFit.FIT_WIDTH,
         )
         self.size_plus_btn = ft.Container(
             content=ft.IconButton(
                 icon=ft.icons.ADD,
                 icon_color=ft.colors.WHITE54,
                 icon_size=8,
-                on_click=lambda e: self.decr_fraction(e),
                 style=ft.ButtonStyle(shape=ft.CountinuosRectangleBorder()),
             ),
             bgcolor=ft.colors.WHITE12,
@@ -51,6 +66,7 @@ class ScreenshotContainer(ContentContainer):
             padding=0,
             margin=0,
             alignment=ft.alignment.center,
+            on_click=lambda e: self.decr_fraction(e),
 
         )
         self.size_minus_btn = ft.Container(
@@ -58,7 +74,6 @@ class ScreenshotContainer(ContentContainer):
                 icon=ft.icons.REMOVE,
                 icon_color=ft.colors.WHITE54,
                 icon_size=8,
-                on_click=lambda e: self.incr_fraction(e),
                 style=ft.ButtonStyle(shape=ft.CountinuosRectangleBorder()),
             ),
             bgcolor=ft.colors.WHITE12,
@@ -68,6 +83,7 @@ class ScreenshotContainer(ContentContainer):
             padding=0,
             margin=0,
             alignment=ft.alignment.center,
+            on_click=lambda e: self.incr_fraction(e),
         )
 
         self.updt_plus_btn = ft.Container(
@@ -75,7 +91,6 @@ class ScreenshotContainer(ContentContainer):
                 icon=ft.icons.ADD,
                 icon_color=ft.colors.WHITE54,
                 icon_size=8,
-                on_click=lambda e: self.incr_updti(e),
                 style=ft.ButtonStyle(shape=ft.CountinuosRectangleBorder()),
             ),
             bgcolor=ft.colors.WHITE12,
@@ -85,6 +100,7 @@ class ScreenshotContainer(ContentContainer):
             padding=0,
             margin=0,
             alignment=ft.alignment.center,
+            on_click=lambda e: self.incr_updti(e),
 
         )
         self.updt_minus_btn = ft.Container(
@@ -92,7 +108,6 @@ class ScreenshotContainer(ContentContainer):
                 icon=ft.icons.REMOVE,
                 icon_color=ft.colors.WHITE54,
                 icon_size=8,
-                on_click=lambda e: self.decr_updti(e),
                 style=ft.ButtonStyle(shape=ft.CountinuosRectangleBorder()),
             ),
             bgcolor=ft.colors.WHITE12,
@@ -102,6 +117,7 @@ class ScreenshotContainer(ContentContainer):
             padding=0,
             margin=0,
             alignment=ft.alignment.center,
+            on_click=lambda e: self.decr_updti(e),
         )
 
         self.scale_ctrls = ft.Row([
@@ -128,8 +144,7 @@ class ScreenshotContainer(ContentContainer):
             self.updt_plus_btn,
                                     ],
             spacing=2)
-        self.toggle_screenshots = ft.Switch(active_color=ft.colors.INVERSE_PRIMARY,             scale=0.8,
-)
+        self.toggle_screenshots = ft.Switch(active_color=ft.colors.INVERSE_PRIMARY)
         self.toggle_row = ft.Row(controls=[ft.Text('capture', color=ft.colors.WHITE54, style=ft.TextThemeStyle.BODY_SMALL), self.toggle_screenshots], spacing=2)
         self.control_row = ft.Row([
             self.toggle_row,

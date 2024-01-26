@@ -68,13 +68,13 @@ class Process:
             return True
 
     def hide_windows(self, value):
-        match value:
-            case True:
-                h_thread = threading.Thread(target=curtains.hide_windows, args=(self.pid,))
-                h_thread.start()
-            case False:
-                uh_thread = threading.Thread(target=curtains.unhide_windows, args=(self.pid,))
-                uh_thread.start()
+        
+        if value is True:
+            h_thread = threading.Thread(target=curtains.hide_windows, args=(self.pid,))
+            h_thread.start()
+        elif value is False:
+            uh_thread = threading.Thread(target=curtains.unhide_windows, args=(self.pid,))
+            uh_thread.start()
         db.update_hidden(self.path, value)
 
     def update_windows(self, w_col=None):

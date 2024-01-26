@@ -2,9 +2,8 @@ import threading
 import flet as ft
 
 from . import curtains
-from . import database as data
+from . import database as db
 
-db = data.Database()
 
 class Process:
     def __init__(self, pid):
@@ -26,29 +25,20 @@ class Process:
         self.properties: dict = curtains.getFileProperties(self.path)
         self.display_name: str
 
-        try:
-            if self.properties['StringFileInfo'].get('ProductName'):
-                product_name = self.properties['StringFileInfo']['ProductName']
-                if 'Microsoft® Windows®' in product_name:
-                    if self.properties['StringFileInfo'].get('InternalName'):
-                        self.display_name = (self.properties['StringFileInfo']['InternalName']).title()
-                else:
-                    self.display_name = product_name
+        if self.properties['StringFileInfo'].get('ProductName'):
+            product_name = self.properties['StringFileInfo']['ProductName']
+            if product_name == 'Microsoft® Windows® Operating System':
+                if self.properties['StringFileInfo'].get('InternalName'):
+                    self.display_name = self.properties['StringFileInfo']['InternalName']
             else:
-                self.display_name = self.name
-        except:
+                self.display_name = product_name
+        else:
             self.display_name = self.name
 
         self.delete_w_titles = False
         self.windows: dict = dict()
         self.update_windows()
-        if len(self.windows) >= 0:
-            try:
-                self.higher_priv = curtains.check_priviliges(list(self.windows)[0])
-            except IndexError:
-                self.higher_priv = None
-        else:
-            self.higher_priv = None
+        self.higher_priv = curtains.check_priviliges(list(self.windows)[0])
         print(self.higher_priv)
         self.db_entry = db.get_row(self.path)
         if self.db_entry:
@@ -78,13 +68,13 @@ class Process:
             return True
 
     def hide_windows(self, value):
-        match value:
-            case True:
-                h_thread = threading.Thread(target=curtains.hide_windows, args=(self,))
-                h_thread.start()
-            case False:
-                uh_thread = threading.Thread(target=curtains.unhide_windows, args=(self,))
-                uh_thread.start()
+        
+        if value is True:
+            h_thread = threading.Thread(target=curtains.hide_windows, args=(self.pid,))
+            h_thread.start()
+        elif value is False:
+            uh_thread = threading.Thread(target=curtains.unhide_windows, args=(self.pid,))
+            uh_thread.start()
         db.update_hidden(self.path, value)
 
     def update_windows(self, w_col=None):
@@ -96,6 +86,7 @@ class Process:
                 if self.hidden:
                     self.hide_windows(True)
                 if w_col:
+                    print('done')
                     w_col.build_item(win)
             elif curtains.pid_of_hwnd(hwnd) == self.pid and hwnd in self.windows: # already known windows
                 if self.delete_w_titles:
@@ -128,6 +119,9 @@ class ProcessDict(dict):
             return self[pid]
         else:
             raise AttributeError("PID not found: " + pid)
+
+    def __setattr__(self, pid, value):
+        self[pid] = value
 
     def __delattr__(self, pid):
         if pid in self:

@@ -1,7 +1,7 @@
 import flet as ft
 
 class ScaleWidget(ft.Container):
-    def __init__(self, target: ft, attr_name: str, min_value: float | None = None, max_value: float | None = None,
+    def __init__(self, target: ft, attr_name: str, min_value = None, max_value = None,
                  stepsize: float = 0.1):
         super().__init__()
         self.attr_name = attr_name
@@ -28,7 +28,7 @@ class ScaleWidget(ft.Container):
             tight=True,
             spacing=0
         )
-    #fixme: cant fastclick buttons
+
     def decrease(self, e, t, attr_name: str):
         old_val = getattr(t, attr_name)
         if self.min_value is None or old_val > self.min_value:

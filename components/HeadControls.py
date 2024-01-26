@@ -1,7 +1,5 @@
-import math
-
 import flet as ft
-
+import math
 
 class HeadControls(ft.Container):
     def __init__(self, content_col, page, processlist, contents):
@@ -23,9 +21,9 @@ class HeadControls(ft.Container):
         self.margin = 8
         self.status_icon_allhidden = ft.Stack(
             controls=[
-                ft.Icon(name=ft.icons.SHIELD_OUTLINED, scale=5, color=blue, opacity=0.1),
+                ft.Icon(name=ft.icons.SHIELD_OUTLINED,scale=5, color=blue, opacity=0.1),
                 ft.Icon(name=ft.icons.SHIELD_OUTLINED, scale=4, color=blue, opacity=0.3),
-                ft.Icon(name=ft.icons.SHIELD_OUTLINED, scale=3, color=blue, opacity=1),
+                ft.Icon(name=ft.icons.SHIELD_OUTLINED, scale=3, color= blue, opacity=1),
                 ft.Icon(name=ft.icons.VISIBILITY_OFF, scale=1.5, color=blue, opacity=1)
             ],
             height=60,
@@ -34,15 +32,15 @@ class HeadControls(ft.Container):
             controls=[
                 ft.Icon(name=ft.icons.VISIBILITY, scale=1.5, color=yellow, opacity=1),
 
-                ft.Icon(name=ft.icons.SHIELD_OUTLINED, scale=5, color=yellow, opacity=0.1),
+                ft.Icon(name=ft.icons.SHIELD_OUTLINED,scale=5, color=yellow, opacity=0.1),
                 ft.Icon(name=ft.icons.SHIELD_OUTLINED, scale=4, color=yellow, opacity=0.3),
                 ft.Icon(name=ft.icons.SHIELD_OUTLINED, scale=3, color=yellow, opacity=1),
             ],
             height=60,
         )
 
-        # self.status_yellow = ft.Text(value='Privacy: partial')
-        # self.status_yellow = ft.Text(value='Privacy: partial')
+        #self.status_yellow = ft.Text(value='Privacy: partial')
+        #self.status_yellow = ft.Text(value='Privacy: partial')
         self.status_icon = self.status_icon_allhidden
         self.status_text = ft.Text(value='Curtains')
         self.status_description = ft.Text(
@@ -50,7 +48,7 @@ class HeadControls(ft.Container):
             color=blue,
             size=12,
             style=ft.TextStyle.italic
-            # opacity=0.5
+            #opacity=0.5
         )
         self.status_container = ft.Container(
             content=ft.Column(
@@ -64,17 +62,17 @@ class HeadControls(ft.Container):
                 spacing=0
             ),
             width=140,
-            # bgcolor='yellow',
+            #bgcolor='yellow',
             alignment=ft.alignment.center,
-            padding=ft.padding.only(bottom=4)
-        )
+            padding= ft.padding.only(bottom=4)
+                )
 
         self.expand_content_btn = ft.Container(
             content=ft.IconButton(
                 icon=ft.icons.ARROW_FORWARD_IOS,
                 icon_color=ft.colors.WHITE54,
                 icon_size=18,
-                # style=ft.ButtonStyle(shape=ft.CountinuosRectangleBorder()),
+                #style=ft.ButtonStyle(shape=ft.CountinuosRectangleBorder()),
                 rotate=0,
                 animate_rotation=100,
                 on_click=lambda e: self.toggle_content(e),
@@ -88,13 +86,13 @@ class HeadControls(ft.Container):
                 icon=ft.icons.DESKTOP_WINDOWS_SHARP,
                 icon_color=ft.colors.WHITE54,
                 icon_size=18,
-                data='windows',
-                on_click=lambda e: self.switch_content(e.control.data),
                 style=ft.ButtonStyle(shape=ft.CountinuosRectangleBorder()),
             ),
             bgcolor=ft.colors.WHITE12,
+            on_click=lambda e: self.switch_content(e),
             border_radius=8,
-            # tooltip='Windows'
+            data='windows',
+            tooltip='Windows'
         )
 
         self.settings_content_btn = ft.Container(
@@ -102,14 +100,14 @@ class HeadControls(ft.Container):
                 icon=ft.icons.SETTINGS_SHARP,
                 icon_color=ft.colors.WHITE54,
                 icon_size=18,
-                data='settings',
-                on_click=lambda e: self.switch_content(e.control.data),
                 style=ft.ButtonStyle(shape=ft.CountinuosRectangleBorder()),
             ),
             bgcolor=ft.colors.WHITE12,
+            on_click=lambda e: self.switch_content(e),
             border_radius=8,
             alignment=ft.alignment.center,
-            # tooltip='Settings'
+            data='settings',
+            tooltip='Settings'
         )
 
         self.preview_config_btn = ft.Container(
@@ -117,16 +115,16 @@ class HeadControls(ft.Container):
                 icon=ft.icons.VISIBILITY_SHARP,
                 icon_color=ft.colors.WHITE54,
                 icon_size=18,
-                data='preview',
-                on_click=lambda e: self.switch_content(e.control.data),
-                style=ft.ButtonStyle(shape=ft.CountinuosRectangleBorder()),
+                #style=ft.ButtonStyle(shape=ft.CountinuosRectangleBorder()),
             ),
             bgcolor=ft.colors.INVERSE_PRIMARY,
+            on_click=lambda e: self.switch_content(e),
             border_radius=8,
             padding=0,
             margin=0,
-            # disabled=True,
-            # tooltip='Preview'
+            data='preview',
+            disabled=True,
+            tooltip='Preview'
         )
         # self.unhide_all_btn = ft.Container(
         #     content=ft.IconButton(
@@ -138,22 +136,20 @@ class HeadControls(ft.Container):
         #     border_radius=8
         # )
         self.all_hidden_switch = ft.Switch(
-            value=False,
-            scale=0.8,
-            active_color=ft.colors.INVERSE_PRIMARY,
-            on_change=lambda e: self.toggle_all_hidden(e),
-        )
+                    value=False,
+                    active_color=ft.colors.INVERSE_PRIMARY,
+                    on_change=lambda e: self.toggle_all_hidden(e),
+                )
 
         self.btn_row0 = ft.Row(
             controls=[
                 ft.Text(value='hide everything', color=ft.colors.WHITE54, size=12),
                 ft.Container(
                     content=self.all_hidden_switch,
-                    padding=ft.padding.only(right=10)
+                    padding= ft.padding.only(right=6)
                 ),
             ],
             alignment=ft.MainAxisAlignment.END,
-            spacing= 0
         )
         self.btn_row1 = ft.Row(
             controls=[
@@ -172,8 +168,8 @@ class HeadControls(ft.Container):
                     ft.Container(self.btn_row1),
                     ft.Container(
                         content=self.btn_row0,
-                        # bgcolor=red,
-                        # alignment=ft.alignment.bottom_center,
+                        #bgcolor=red,
+                        #alignment=ft.alignment.bottom_center,
                         height=24,
                         padding=0,
                         margin=0,
@@ -184,7 +180,7 @@ class HeadControls(ft.Container):
                 spacing=0,
             ),
             alignment=ft.alignment.bottom_center,
-            # bgcolor=green,
+            #bgcolor=green,
             padding=0,
             margin=0,
         )
@@ -195,17 +191,16 @@ class HeadControls(ft.Container):
                 self.controls_container,
             ]
         )
-
     def toggle_content(self, e):
         if self.expand_content_btn.content.rotate == math.pi:
             self.expand_content_btn.content.rotate = 0
             self.content_area.visible = True
-            self.page.window_width = 1100
+            self.page.window_width = 1070
 
         else:
             self.expand_content_btn.content.rotate = math.pi
             self.content_area.visible = False
-            self.page.window_width = 450
+            self.page.window_width = 440
 
     def toggle_all_hidden(self, e):
         for p in self.p_dict:
@@ -215,13 +210,16 @@ class HeadControls(ft.Container):
         self.processlist.all_hidden = e.control.value
 
     def switch_content(self, e):
-        key = e
-
+        key = e.control.data
+        print(type(self.contents))
+        print(self.contents[key])
+        self.content_area.content.controls = [self.contents[key]]
         for btn in self.btn_row1.controls:
             if btn.data == key:
-                btn.bgcolor = ft.colors.INVERSE_PRIMARY
-
+                btn.bgcolor =ft.colors.INVERSE_PRIMARY
+                btn.disabled = True
             else:
                 btn.bgcolor = ft.colors.WHITE12
+                btn.disabled = False
 
-        self.content_area.content.controls = [self.contents[key]]
+

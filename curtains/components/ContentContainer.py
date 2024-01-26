@@ -6,7 +6,7 @@ import flet as ft
 
 class ContentContainer(ft.Container):
 
-    def __init__(self, title: ft.Text | str | None = None, max_height: int = 52, width: int = 208,
+    def __init__(self, title= None, max_height: int = 52, width: int = 208,
                  title_action: int = 1,
                  icon=None):
         super().__init__()
@@ -75,21 +75,20 @@ class ContentContainer(ft.Container):
             padding=ft.padding.symmetric(0, self.content_padding),
             # bgcolor=ft.colors.WHITE10
         )
-        match title_action:
-            case 0:
-                self.height = self.max_height
-            case 1:
-                self.clps_btn_container.content = self.arrow
-                self.body.visible = False
+        if title_action ==0:
+            self.height = self.max_height
+        elif title_action == 1:
+            self.clps_btn_container.content = self.arrow
+            self.body.visible = False
 
-            case 2:
-                self.clps_btn_container.content = self.arrow
-                self.actions.controls.insert(-1, ft.Container(content=self.action_info))
-                self.body.visible = False
+        elif title_action == 2:
+            self.clps_btn_container.content = self.arrow
+            self.actions.controls.insert(-1, ft.Container(content=self.action_info))
+            self.body.visible = False
 
-            case 3:
-                self.clps_btn_container.content = self.switch
-                self.body.visible = False
+        elif title_action == 3:
+            self.clps_btn_container.content = self.switch
+            self.body.visible = False
 
 
         self.content = ft.Column(controls=[
