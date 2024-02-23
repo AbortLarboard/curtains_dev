@@ -288,8 +288,7 @@ class Searchfilterbar(ft.Container):
                                 ),
                             radius=18,
                             bgcolor=ft.colors.INVERSE_PRIMARY),
-                            width=40,
-                            height=40,
+                            border_radius=8,
                         )
 
         title = ft.Text(
@@ -330,7 +329,6 @@ class Searchfilterbar(ft.Container):
         self.del_titles_switch = ft.Switch(
             active_color=ft.colors.INVERSE_PRIMARY,
             value=p.delete_w_titles,
-            scale=0.8,
             on_change=lambda e, p=p : self.toggle_del_all_wtitles(process=p, e=e))
         self.row_1.content = ft.Container(
             ft.Column(controls=[
@@ -341,16 +339,13 @@ class Searchfilterbar(ft.Container):
                         icon
                     ]),
                     ft.Column(controls=[
-                        ft.Container(content=
-                            ft.Row([title, ft.Row(controls=[
-                                ft.Text(value='delete all window titles', color=ft.colors.WHITE54, size=12),
-                                self.del_titles_switch], spacing=0),
-                                ],
-                                   alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
-                                   width=540,
-                                   ),
-                            padding=ft.padding.only(right=10)
-                            ),
+                        ft.Row([title, ft.Row(controls=[
+                            ft.Text(value='delete all window titles', color=ft.colors.WHITE54, size=12),
+                            self.del_titles_switch]),
+                            ],
+                               alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+                               width=548
+                               ),
                         ft.Row([pid]),
                         ft.Row([path]),
                         #ft.Row([cmd]),

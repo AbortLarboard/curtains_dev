@@ -5,8 +5,12 @@ class PageTitle(ft.Container):
         super().__init__()
 
         self.content = ft.Column()
+        #self.content.spacing = 20
+        #self.content.alignment = ft.MainAxisAlignment.SPACE_AROUND
         self.title = title
         self.icon = icon
+        #self.icon.color = ft.colors.WHITE54
+
         self.title.style = ft.TextThemeStyle.TITLE_MEDIUM
         self.title.weight = ft.FontWeight.BOLD
         self.title_row = ft.Row(

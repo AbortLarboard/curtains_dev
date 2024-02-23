@@ -7,10 +7,6 @@ import time
 from ctypes import wintypes
 from functools import wraps
 from io import BytesIO
-import hashlib
-
-from .Process import *
-
 
 import mss
 import mss.windows
@@ -21,7 +17,6 @@ import pythoncom
 import win32api  # pip package pypiwin32; library is named win32; has to be imported this way
 import win32gui  # pip package pypiwin32; library is named win32; has to be imported this way
 import win32ui  # pip package pypiwin32; library is named win32; has to be imported this way
-import win32file
 from PIL import Image
 from pyinjector import inject
 
@@ -192,61 +187,48 @@ def image2base64(img: Image) -> str:
 
 
 @timeit
-def hide_windows(p: Process) -> None:
+def hide_windows(pid: int) -> None:
     """inject dll into process to hide it"""
     # inject into process
-    if is_64bit_pe(p.path):
-        # 64-bit dll
-        file = BASEDIR + r"/assets/Hide.dll"
-        try:
-            if compute_sha256(file) == '9ba3f411731619a96d609075fdbf1ce6cb8acb64b62c9d188c4b6d1423e89481':
-                inject(p.pid, (file))
+    # 1.Try 64-bit dll
+    try:
+        inject(pid, (BASEDIR + r"/assets/Hide.dll"))
 
-        except Exception as e:
-            # print(f'{e}\n{pid} 64\n')
-            # print(e)
-            pass
-    else:
-        # 32-bit dll
-        file = BASEDIR + r"/assets/Hide_32bit.dll"
-        try:
-            if compute_sha256(file) == '9a014b5070541e8ac5970faee956f78b9bafdedae6fe3ce0bbc874069a8e10a1':
-                inject(p.pid, (file))
+    except Exception as e:
+        # print(f'{e}\n{pid} 64\n')
+        # print(e)
+        pass
 
-        except Exception as e:
-            # print(f'{e}\n{pid} 32\n already hidden\n')
-            # print(e)
-            pass
+    # 2.Try 32-bit dll
+    try:
+        inject(pid, (BASEDIR + r"/assets/Hide_32bit.dll"))
+
+    except Exception as e:
+        # print(f'{e}\n{pid} 32\n already hidden\n')
+        # print(e)
+        pass
 
 
 @timeit
-def unhide_windows(p: Process) -> None:
+def unhide_windows(pid: int) -> None:
     """inject dll into process to unhide it"""
     # inject into process
-    print(is_64bit_pe(p.path))
-    # 64-bit dll
-    if is_64bit_pe(p.path):
-        file = BASEDIR + r"\assets\Unhide.dll"
-        try:
-            if compute_sha256(file) == 'bcee8d1c1bbd4ec35014c2161406cb5351f0684ad9ebdff828e72b3f470868c9':
-                inject(p.pid, (file))
+    # 1.Try 64-bit dll
+    try:
+        inject(pid, (BASEDIR + r"\assets\Unhide.dll"))
 
-        except Exception as e:
-            # print(f'{e}\n{pid} 64\n already visible\n')
-            # print(e)
-            pass
+    except Exception as e:
+        # print(f'{e}\n{pid} 64\n already visible\n')
+        # print(e)
+        pass
+    # 2.Try 32-bit dll
+    try:
+        inject(pid, (BASEDIR + r"\assets\Unhide_32bit.dll"))
 
-    else:
-        # 32-bit dll
-        file = BASEDIR + r"\assets\Unhide_32bit.dll"
-        try:
-            if compute_sha256(file) == '4538da06503f14d670e43639065ec85dd0f34fa8f48466dc0707eebc21c0e439':
-                inject(p.pid, (file))
-
-        except Exception as e:
-            # print(f'{e}\n{pid} 32\n')
-            # print(e)
-            pass
+    except Exception as e:
+        # print(f'{e}\n{pid} 32\n')
+        # print(e)
+        pass
 
 
 def minimize_window(hwnd: int):
@@ -396,16 +378,6 @@ def getFileProperties(fname):
         pass
 
     return props
-
-def compute_sha256(file_name):
-    hash_sha256 = hashlib.sha256()
-    with open(file_name, "rb") as f:
-        for chunk in iter(lambda: f.read(4096), b""):
-            hash_sha256.update(chunk)
-    return hash_sha256.hexdigest()
-
-def is_64bit_pe(filename):
-    return win32file.GetBinaryType(filename) == 6
 
 # def isvisible(hwnd): # this does not work. needs to be called via dll injection to make it work
 #     # print(ctypes.windll.user32.SetWindowDisplayAffinity(hwnd, 0x00000011))

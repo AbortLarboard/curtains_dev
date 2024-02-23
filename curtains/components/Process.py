@@ -24,17 +24,24 @@ class Process:
         # Fixme: psutil error on some,eg:psutil.AccessDenied: (pid=1204)
         self.properties: dict = curtains.getFileProperties(self.path)
         self.display_name: str
-
-        if self.properties['StringFileInfo'].get('ProductName'):
-            product_name = self.properties['StringFileInfo']['ProductName']
-            if product_name == 'Microsoft® Windows® Operating System':
-                if self.properties['StringFileInfo'].get('InternalName'):
-                    self.display_name = self.properties['StringFileInfo']['InternalName']
+        #print(type(self.properties['StringFileInfo']),'Look here')
+        #from pprint import pprint
+        #pprint(self.properties['StringFileInfo'])
+        #print("======================")
+        try:
+            if self.properties['StringFileInfo'].get('ProductName'):
+                product_name = self.properties['StringFileInfo']['ProductName']
+                if product_name == 'Microsoft® Windows® Operating System':
+                    if self.properties['StringFileInfo'].get('InternalName'):
+                        self.display_name = self.properties['StringFileInfo']['InternalName']
+                else:
+                    self.display_name = product_name
             else:
-                self.display_name = product_name
-        else:
-            self.display_name = self.name
-
+                self.display_name = self.name
+        except AttributeError:
+            import psutil
+            ps_process = psutil.Process(pid)
+            self.display_name = ps_process.name()
         self.delete_w_titles = False
         self.windows: dict = dict()
         self.update_windows()
@@ -68,13 +75,13 @@ class Process:
             return True
 
     def hide_windows(self, value):
-        match value:
-            case True:
-                h_thread = threading.Thread(target=curtains.hide_windows, args=(self.pid,))
-                h_thread.start()
-            case False:
-                uh_thread = threading.Thread(target=curtains.unhide_windows, args=(self.pid,))
-                uh_thread.start()
+        
+        if value is True:
+            h_thread = threading.Thread(target=curtains.hide_windows, args=(self.pid,))
+            h_thread.start()
+        elif value is False:
+            uh_thread = threading.Thread(target=curtains.unhide_windows, args=(self.pid,))
+            uh_thread.start()
         db.update_hidden(self.path, value)
 
     def update_windows(self, w_col=None):

@@ -38,7 +38,7 @@ COLOR_TRANSPARENT = ft.colors.TRANSPARENT
 if getattr(sys, 'frozen', False):
     logging.basicConfig(filename=(sys._MEIPASS + 'curtains.log'), encoding='utf-8', level=logging.ERROR)
 else:
-    logging.basicConfig(filename='curtains.log', encoding='utf-8', level=logging.ERROR)
+    logging.basicConfig(filename='curtains.log', level=logging.ERROR)
 
 
 
